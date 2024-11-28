@@ -1,21 +1,32 @@
-/*package com.aluracursos.literalura.modelo;
+package com.aluracursos.literalura.modelo;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
-@Table(name="libros")
 public class Libro {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
     private String titulo;
-    @OneToMany
-    private List<DatosAutor> autor;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "libro_autores",
+            joinColumns = @JoinColumn(name = "libro_id"),
+            inverseJoinColumns = @JoinColumn(name = "autor_id")
+    )
+    private List<Autor> autores;
+
+    @ElementCollection
+    @CollectionTable(name = "libro_idiomas", joinColumns = @JoinColumn(name = "libro_id"))
     private List<String> idiomas;
+
     private Double numeroDescargas;
+
+    // Getters y setters
 
     public Long getId() {
         return id;
@@ -33,12 +44,12 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<DatosAutor> getAutor() {
-        return autor;
+    public List<Autor> getAutores() {
+        return autores;
     }
 
-    public void setAutor(List<DatosAutor> autor) {
-        this.autor = autor;
+    public void setAutores(List<Autor> autores) {
+        this.autores = autores;
     }
 
     public List<String> getIdiomas() {
@@ -56,4 +67,4 @@ public class Libro {
     public void setNumeroDescargas(Double numeroDescargas) {
         this.numeroDescargas = numeroDescargas;
     }
-}*/
+}

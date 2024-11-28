@@ -1,9 +1,8 @@
-/*package com.aluracursos.literalura.modelo;
+package com.aluracursos.literalura.modelo;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "autores")
 public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +42,4 @@ public class Autor {
     public void setFechaDeFallecimiento(String fechaDeFallecimiento) {
         this.fechaDeFallecimiento = fechaDeFallecimiento;
     }
-}*/
+}
