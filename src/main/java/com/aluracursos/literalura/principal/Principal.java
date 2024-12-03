@@ -7,6 +7,7 @@ import com.aluracursos.literalura.modelo.Libro;
 import com.aluracursos.literalura.repositorio.LibroRepositorio;
 import com.aluracursos.literalura.service.ConsumoAPI;
 import com.aluracursos.literalura.service.ConvierteDatos;
+import com.aluracursos.literalura.service.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,8 @@ import java.util.Scanner;
 public class Principal {
     @Autowired
     private LibroRepositorio libroRepositorio;
+    @Autowired
+    private LibroService libroService;
 
     private Scanner teclado = new Scanner(System.in);
     private static final String URL_BASE = "https://gutendex.com/books/";
@@ -83,78 +86,28 @@ public class Principal {
             System.out.println("Libro no encontrado");
         }
     }
-    public void listarLibros(){
+    public void listarLibros() {
         System.out.println("Lista de libros guardados en la DB");
-        List<Libro> libros = libroRepositorio.findAll();
-        if (libros.isEmpty()){
+        List<Libro> libros = libroService.listarLibros(); // Llamamos al servicio
+
+        if (libros.isEmpty()) {
             System.out.println("No hay libros guardados");
-        }else {
+        } else {
             libros.forEach(libro -> {
                 System.out.println("Título: " + libro.getTitulo());
-                System.out.println("Idiomas: " + String.join(", " + libro.getIdiomas()));
-                System.out.println("Número de Descargas: " + libro.getNumeroDescargas());
-                System.out.println("Autores:");
-                /*libro.getAutores().forEach(autor -> {
-                    System.out.println("Nombre: " + autor.getNombre());
-                    System.out.println("Fecha de Nacimiento: " + autor.getFechaDeNacimiento());
-                    System.out.println("Fecha de Fallecimiento: " + autor.getFechaDeFallecimiento());
-                });*/
+                System.out.println("Descargas: " + libro.getNumeroDescargas());
+                System.out.println("Idiomas: " + String.join(", ", libro.getIdiomas()));
 
+                System.out.println("Autores:");
+                libro.getAutores().forEach(autor -> {
+                    System.out.println("  - Nombre: " + autor.getNombre());
+                    System.out.println("    Fecha de Nacimiento: " + autor.getFechaDeNacimiento());
+                    System.out.println("    Fecha de Fallecimiento: " + autor.getFechaDeFallecimiento());
+                });
+
+                System.out.println("---------------------------------------");
             });
         }
     }
-    /*public void muestraMenu(){
-        var json = consumoAPI.obtenerDatos(URL_BASE);
-        var datos = conversor.obtenerDatos(json, Datos.class);
 
-        System.out.println("Por favor, digite el número del título");
-        var tituloLibro = teclado.nextLine();
-        json = consumoAPI.obtenerDatos(URL_BASE+"?search="
-                +tituloLibro.replace(" ", "+"));
-        var datosBusqueda = conversor.obtenerDatos(json, Datos.class);
-        Optional<DatosLibros> libroBuscado = datosBusqueda.resultados().stream()
-                .filter(l -> l.titulo().toUpperCase().contains(tituloLibro.toUpperCase()))
-                .findFirst();
-        if (libroBuscado.isPresent()){
-            DatosLibros datosLibros = libroBuscado.get();
-            System.out.println("Libro encontrado: ");
-            System.out.println("Título: " + datosLibros.titulo());
-            System.out.println("Autor:");
-
-            datosLibros.autor().forEach(autor ->{
-                System.out.println("    Nombre: " + autor.nombre());
-                System.out.println("    Año de Nacimiento: " + autor.fechaDeNacimiento());
-                System.out.println("    Año de Fallecimiento: " + autor.fechaDeFallecimiento());
-            });
-
-            System.out.println("    Idiomas: " + datosLibros.idiomas());
-            System.out.println("    Numero de Descargas: " + datosLibros.numeroDescargas());
-
-            if (libroRepositorio.existsByTitulo(datosLibros.titulo())){
-                System.out.println("El libro ya existe en la DB");
-            } else {
-                Libro libro = new Libro();
-                libro.setTitulo(datosLibros.titulo());
-                libro.setNumeroDescargas(datosLibros.numeroDescargas());
-                libro.setIdiomas(datosLibros.idiomas());
-
-                // **Transformación de autores**
-                List<Autor> autores = datosLibros.autor().stream().map(autor -> {
-                    Autor nuevoAutor = new Autor();
-                    nuevoAutor.setNombre(autor.nombre());
-                    nuevoAutor.setFechaDeNacimiento(autor.fechaDeNacimiento());
-                    nuevoAutor.setFechaDeFallecimiento(autor.fechaDeFallecimiento());
-                    return nuevoAutor;
-                }).toList();
-                libro.setAutores(autores);
-
-                // **Guardar en la base de datos**
-                libroRepositorio.save(libro);
-                System.out.println("El libro se ha guardado en la base de datos.");
-            }
-
-        } else {
-            System.out.println("Libro NO encontrado");
-        }
-    }*/
 }

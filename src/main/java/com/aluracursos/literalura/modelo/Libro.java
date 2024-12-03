@@ -23,7 +23,6 @@ public class Libro {
     @ElementCollection
     @CollectionTable(name = "libro_idiomas", joinColumns = @JoinColumn(name = "libro_id"))
     private List<String> idiomas;
-
     private Double numeroDescargas;
 
     // Getters y setters
